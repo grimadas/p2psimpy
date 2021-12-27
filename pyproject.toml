@@ -10,6 +10,7 @@ repository = "https://github.com/grimadas/p2psimpy"
 
 [tool.poetry.dependencies]
 python = "^3.9"
+simpy = "^4.0.1"
 
 [tool.poetry.dev-dependencies]
 
