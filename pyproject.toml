@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "p2psimpy"
+version = "0.1.0"
+description = "Event simulator for peer-to-peer experiments"
+authors = ["grimadas <bulat.nasrulin@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/grimadas/p2psimpy"
+repository = "https://github.com/grimadas/p2psimpy"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
