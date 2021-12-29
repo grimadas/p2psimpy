@@ -1,3 +1,4 @@
+import pytest
 import networkx as nx
 
 from p2psimpy.config import Config, Dist, PeerType
@@ -5,35 +6,43 @@ from p2psimpy.consts import MBit
 from p2psimpy.simulation import Simulation
 
 
-class Locations(Config):
-    locations = ['LocA', 'LocB']
-    latencies = {
-        'LocB': {'LocB': Dist('gamma', (1, 1, 1))},
-        'LocA': {'LocB': Dist('norm', (12, 2)), 'LocA': Dist('norm', (2, 0.5))},
-    } 
+@pytest.fixture
+def sim() -> Simulation:
 
-# Number of nodes
-N = 10
+    class Locations(Config):
+        locations = ['LocA', 'LocB']
+        latencies = {
+            'LocB': {'LocB': Dist('gamma', (1, 1, 1))},
+            'LocA': {'LocB': Dist('norm', (12, 2)), 'LocA': Dist('norm', (2, 0.5))},
+        } 
 
-# Generate network topology 
-G = nx.erdos_renyi_graph(N, 0.5)
-nx.set_node_attributes(G, {k: 'basic' for k in G.nodes()}, 'type')
+    # Number of nodes
+    N = 10
 
-class PeerConfig(Config):
-    location = Dist('sample', Locations.locations)
-    bandwidth_ul = Dist( 'norm', (50*MBit, 10*MBit))
-    bandwidth_dl = Dist( 'norm', (50*MBit, 10*MBit))
+    # Generate network topology 
+    G = nx.erdos_renyi_graph(N, 0.5)
+    nx.set_node_attributes(G, {k: 'basic' for k in G.nodes()}, 'type')
 
-# Let's add ConnectionManager - that will periodically ping neighbours and check if they are online 
-from p2psimpy.services.connection_manager import BaseConnectionManager
-# For each service you can define own configuration, or use default values.   
-# Lets use base connection manager - that will periodically ping peer and disconnect unresponsive peers.
+    class PeerConfig(Config):
+        location = Dist('sample', Locations.locations)
+        bandwidth_ul = Dist( 'norm', (50*MBit, 10*MBit))
+        bandwidth_dl = Dist( 'norm', (50*MBit, 10*MBit))
 
-services = (BaseConnectionManager,)
-peer_types = {'basic': PeerType(PeerConfig, services)}
+    # Let's add ConnectionManager - that will periodically ping neighbours and check if they are online 
+    from p2psimpy.services.connection_manager import BaseConnectionManager
+    # For each service you can define own configuration, or use default values.   
+    # Lets use base connection manager - that will periodically ping peer and disconnect unresponsive peers.
 
-sim = Simulation(Locations, G, peer_types)
+    services = (BaseConnectionManager,)
+    peer_types = {'basic': PeerType(PeerConfig, services)}
 
-def test_sim_run():
+    return Simulation(Locations, G, peer_types)
+
+def test_sim_run_time(sim: Simulation):
+    sim.run(200)
+    assert sim.time == 200
+
+def test_sim_run_ping(sim: Simulation):
     sim.run(100)
     assert sim.time == 100
+    assert sim.current_topology().number_of_nodes() == 10

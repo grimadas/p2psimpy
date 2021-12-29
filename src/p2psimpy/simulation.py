@@ -24,7 +24,8 @@ class Simulation(object):
         """
             Initialize simulation with known locations, topology and services.
             :param locations: Known locations. Either a yaml file_name, or a Config class.
-            :param topology: subscribable object map: peer_id -> type, optionally also connections to other peers
+            :param topology: subscribable object map: peer_id -> type, 
+              optionally contains connections to other peers in a form of networkx graph
             :param peer_types_map: A map with 'type' -> PeerType objects
             :param logger_dir: directory to store peer logs. default: './logs/'
             :param random_seed: for reproducibility for your experiments.
@@ -249,8 +250,11 @@ class Simulation(object):
             for p in self.peers[t]:
                 p.start_all_runners()
 
-    def get_graph(self, include_bootstrap_peers=False):
-        '''Get current topology of the simulation'''
+    def current_topology(self, include_bootstrap_peers=False) -> nx.Graph:
+        """
+        Get current simulation topology
+        :param include_bootstrap_peers: also report special bootstrap servers
+        """
         G = nx.Graph()
         online_map = dict()
         for p in self.peers_types.keys():
