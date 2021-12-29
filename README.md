@@ -1,7 +1,8 @@
 # p2psimpy
 
 [![Tests](https://github.com/grimadas/p2psimpy/workflows/Tests/badge.svg)](https://github.com/grimadas/p2psimpy/actions?workflow=Tests)
-  
+[![PyPI](https://img.shields.io/pypi/v/p2psimpy.svg)](https://pypi.org/project/p2psimpy/)
+
 
 A simple simulator for peer-to-peer protocols based on [SimPy](https://simpy.readthedocs.io/en/latest/).
 
