@@ -132,7 +132,6 @@ class P2PConnectionManager(BaseConnectionManager):
             peer_sample = sample(self.peer.connections.keys(),
                                  min(self.peer_list_number, len(self.peer.connections.keys())))
             reply = PeerList(self.peer, peer_sample)
-            # self.sample_peers(self.config.peer_list_number))
             self.peer.send(msg.sender, reply)
 
     def recv_peerlist(self, msg):
